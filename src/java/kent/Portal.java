@@ -70,6 +70,11 @@ public class Portal extends HttpServlet {
             String password = request.getParameter("password");
             try {
                 Object signUpResult = user.signIn(username, password);
+
+
+                JSONObject jsonTask = new JSONObject();
+                JSONObject jsonData = new JSONObject();
+
                 if (signUpResult instanceof User) {
                     User u = (User) signUpResult;
 
@@ -79,34 +84,30 @@ public class Portal extends HttpServlet {
                         // Set session
                         se.setAttribute("user", signUpResult);
 
-                        // Response JSON
-                        JSONObject jsonSignInData = new JSONObject();
-
-                        jsonSignInData.put("signin_success", true);
-                        jsonSignInData.put("email", u.getEmail());
-                        jsonSignInData.put("current_balance", u.getCurrentBalance());
-
-                        jsonResponse.put("res_sigin", jsonSignInData);
+                        jsonData.put("signin_success", true);
+                        jsonData.put("email", u.getEmail());
+                        jsonData.put("current_balance", u.getCurrentBalance());
 
                     } else {
-
                         // Set session
                         se.setAttribute("user", signUpResult);
 
-                        // Response JSON
-                        JSONObject jsonSignInData = new JSONObject();
+                        jsonData.put("signin_success", true);
+                        jsonData.put("email", u.getEmail());
+                        jsonData.put("current_balance", u.getCurrentBalance());
 
-                        jsonSignInData.put("signin_success", true);
-                        jsonSignInData.put("email", u.getEmail());
-                        jsonSignInData.put("current_balance", u.getCurrentBalance());
-
-                        jsonResponse.put("res_sigin", jsonSignInData);
+                        //put for task
+                        jsonTask.put("taskID", "res_sigin");
+                        jsonTask.put("data", jsonData);
+                        jsonResponse.put("res_sigin", jsonTask);
 
                     }
                 } else {
-                    JSONObject jsonSignInData = new JSONObject();
-                    jsonSignInData.put("signin_success", false);
-                    jsonResponse.put("res_sigin", jsonSignInData);
+                    jsonData.put("signin_success", false);
+
+                    jsonTask.put("taskID", "res_sigin");
+                    jsonTask.put("data", jsonData);
+                    jsonResponse.put("res_sigin", jsonTask);
                 }
 
             } catch (SQLException ex) {
@@ -117,11 +118,29 @@ public class Portal extends HttpServlet {
 
         } else if ("signout".equals(req)) {
             HttpSession se = request.getSession(false);
-            if (se != null) {               
+            if (se != null) {
                 se.invalidate();
             }
 
-            jsonResponse.put("res_signout", "Sign out successfully");
+            JSONObject jsonTask = new JSONObject();
+            JSONObject jsonData = new JSONObject();
+
+            jsonData.put("message", "Sign out successfully");
+
+            jsonTask.put("taskID", "res_sigout");
+            jsonTask.put("data", jsonData);
+            jsonResponse.put("request", jsonTask);
+
+        } //</editor-fold>
+        //<editor-fold defaultstate="collapsed" desc="Bet requests">
+        else if ("play_bet".equals(req)) {
+            //String username = request.getParameter("username");
+            String[] betPatterns = request.getParameterValues("patterns");
+            String[] betAmounts = request.getParameterValues("amounts");
+            int numberOfBet = betPatterns.length;
+
+            for (int ibet = 0; ibet < numberOfBet; ibet++) {
+            }
 
         } //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Random Number Generator">
@@ -137,6 +156,10 @@ public class Portal extends HttpServlet {
             }
 
             out.println(s.getId());
+            out.println("");
+            RandomNumberGenerator rng = new RandomNumberGenerator();
+            int[] randomDice = rng.getRandom();
+            out.println(randomDice[0] + " " + randomDice[1] + " " + randomDice[2] + rng.isBig() + rng.isSmall());
 
 
 

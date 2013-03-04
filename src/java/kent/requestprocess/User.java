@@ -35,7 +35,8 @@ public class User {
          * Initital JSON object
          */
         JSONObject jsonResult = new JSONObject();
-        JSONObject jsonMessage = new JSONObject();
+        JSONObject jsonTask = new JSONObject();
+        JSONObject jsonData = new JSONObject();
 
         /*
          * Execute SQL
@@ -54,16 +55,18 @@ public class User {
 
         if (rowAffected > 0) {
             // If success
-            jsonMessage.put("message", "Sign up success.");
-            jsonMessage.put("is_success", true);
+            jsonData.put("message", "Sign up success.");
+            jsonData.put("is_success", true);
         } else {
             // If fail
-            jsonMessage.put("message", "Sign up fail for some reason.");
-            jsonMessage.put("is_success", false);
+            jsonData.put("message", "Sign up fail for some reason.");
+            jsonData.put("is_success", false);
         }
-
-        jsonResult.put(
-                "res_signup", jsonMessage);
+        
+        //put for task
+        jsonTask.put("taskID", "res_signup");
+        jsonTask.put("data", jsonData);
+        jsonResult.put("request", jsonTask);  
         return jsonResult;
     }
 
