@@ -6,6 +6,9 @@ package kent;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,7 +39,7 @@ public class Portal extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
-        
+
         /*
          * Get type of request         
          */
@@ -62,29 +65,81 @@ public class Portal extends HttpServlet {
             jsonResponse = user.signUp(username, password, email, date_create);
 
         } else if ("signin".equals(req)) {
-            jsonResponse = user.signIn();
+
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            try {
+                Object signUpResult = user.signIn(username, password);
+                if (signUpResult instanceof User) {
+                    User u = (User) signUpResult;
+
+                    // If success, create and mantain session
+                    HttpSession se = request.getSession(true);
+                    if (se.isNew()) {
+                        // Set session
+                        se.setAttribute("user", signUpResult);
+
+                        // Response JSON
+                        JSONObject jsonSignInData = new JSONObject();
+
+                        jsonSignInData.put("signin_success", true);
+                        jsonSignInData.put("email", u.getEmail());
+                        jsonSignInData.put("current_balance", u.getCurrentBalance());
+
+                        jsonResponse.put("res_sigin", jsonSignInData);
+
+                    } else {
+
+                        // Set session
+                        se.setAttribute("user", signUpResult);
+
+                        // Response JSON
+                        JSONObject jsonSignInData = new JSONObject();
+
+                        jsonSignInData.put("signin_success", true);
+                        jsonSignInData.put("email", u.getEmail());
+                        jsonSignInData.put("current_balance", u.getCurrentBalance());
+
+                        jsonResponse.put("res_sigin", jsonSignInData);
+
+                    }
+                } else {
+                    JSONObject jsonSignInData = new JSONObject();
+                    jsonSignInData.put("signin_success", false);
+                    jsonResponse.put("res_sigin", jsonSignInData);
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Portal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+
 
         } else if ("signout".equals(req)) {
-            jsonResponse = user.signOut();
+            HttpSession se = request.getSession(false);
+            if (se != null) {               
+                se.invalidate();
+            }
+
+            jsonResponse.put("res_signout", "Sign out successfully");
 
         } //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Random Number Generator">
         else if ("three_dice_random".equals(req)) {
-            
-            HttpSession s = request.getSession();           
+
+            HttpSession s = request.getSession();
             if (null != s.getAttribute("n")) {
                 s.setAttribute("n", 1);
-            }
-            else {
+            } else {
                 //int i = Integer.parseInt(s.getAttribute("n"));
                 //int i = 
                 //s.setAttribute("n", i + 1);
             }
-            
+
             out.println(s.getId());
-            
-            
-            
+
+
+
             jsonResponse = RandomNumberGenerator.getThreeDiceRandom();
 
         }

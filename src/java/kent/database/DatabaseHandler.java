@@ -116,6 +116,7 @@ public class DatabaseHandler {
             String procedureName,
             String[] parameterNames,
             Object[] parameterValues) {
+        
         try {
             if (this.connection == null || this.connection.isClosed()) {
                 this.connection = connectMySql("10.0.1.15:3306", "kibowvn", "123456", "kb_sicbo");
@@ -139,6 +140,7 @@ public class DatabaseHandler {
             for (int i = 0; i < parameterNames.length; i++) {
                 this.proc.setObject(i + 1, parameterValues[i]);
             }
+            
             resultSet = this.proc.executeQuery();
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
