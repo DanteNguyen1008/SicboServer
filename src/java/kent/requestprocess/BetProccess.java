@@ -82,9 +82,9 @@ public class BetProccess {
             if (this.user.updateBalance(this.currentBalance)) {
                 jsonData.put("is_success", true);
                 if (this.amountBet > 0) {
-                    jsonData.put("message", "win");
+                    jsonData.put("iswin", "win");
                 } else if (this.amountBet <= 0) {
-                    jsonData.put("message", "lose");
+                    jsonData.put("iswin", "lose");
                 }
                 jsonData.put("dice1",this.rng.getDice1());
                 jsonData.put("dice2",this.rng.getDice2());
