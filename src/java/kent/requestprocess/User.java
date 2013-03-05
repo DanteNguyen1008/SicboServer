@@ -21,7 +21,7 @@ public class User {
     private String username;
     private String email;
     private String dataCreate;
-    private String currentBalance;
+    private Float currentBalance;
     
     private DatabaseHandler databaseHandler;
 
@@ -86,7 +86,7 @@ public class User {
             u.setUsername(rs.getString("username"));
             u.setEmail(rs.getString("email"));
             u.setDataCreate(rs.getString("date_create"));
-            u.setCurrentBalance(rs.getString("current_balance"));
+            u.setCurrentBalance(rs.getFloat("current_balance"));
             return u;
         } else {
             // Sign in fail
@@ -160,14 +160,14 @@ public class User {
     /**
      * @return the dataCreate
      */
-    public String getCurrentBalance() {
+    public Float getCurrentBalance() {
         return this.currentBalance;
     }
 
     /**
      * @param dataCreate the dataCreate to set
      */
-    public void setCurrentBalance(String currentBalance) {
+    public void setCurrentBalance(Float currentBalance) {
         this.currentBalance = currentBalance;
     }
     //</editor-fold>

@@ -33,7 +33,16 @@ public class BetProccess {
         
     }
     
+    public void play(int[] patterns, int[] amounts) {
+        
+    }
+    
     public void doBet(Pattern ptn, Float amount, int[] rnd) {
+        /*
+         * Check balance
+         */
+        
+        
         if (1 == ptn.getPatternId()) { // Big
             
         }

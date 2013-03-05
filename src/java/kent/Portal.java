@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import kent.requestprocess.BetProccess;
 import kent.requestprocess.RandomNumberGenerator;
 import kent.requestprocess.User;
 import org.json.simple.JSONObject;
@@ -80,15 +81,8 @@ public class Portal extends HttpServlet {
 
                     // If success, create and mantain session
                     HttpSession se = request.getSession(true);
-                    if (se.isNew()) {
-                        // Set session
-                        se.setAttribute("user", signUpResult);
 
-                        jsonData.put("signin_success", true);
-                        jsonData.put("email", u.getEmail());
-                        jsonData.put("current_balance", u.getCurrentBalance());
-
-                    } else {
+                    if (se.isNew()) {//dont have session yet
                         // Set session
                         se.setAttribute("user", signUpResult);
 
@@ -99,15 +93,28 @@ public class Portal extends HttpServlet {
                         //put for task
                         jsonTask.put("taskID", "res_sigin");
                         jsonTask.put("data", jsonData);
-                        jsonResponse.put("res_sigin", jsonTask);
+                        jsonResponse.put("request", jsonTask);
+                    } else {//have session  -dont need to login
+                        // Set session
+                        /*
+                         se.setAttribute("user", signUpResult);
 
+                         jsonData.put("signin_success", true);
+                         jsonData.put("email", u.getEmail());
+                         jsonData.put("current_balance", u.getCurrentBalance());
+
+                         //put for task
+                         jsonTask.put("taskID", "res_sigin");
+                         jsonTask.put("data", jsonData);
+                         jsonResponse.put("request", jsonTask);
+                         */
                     }
                 } else {
                     jsonData.put("signin_success", false);
 
                     jsonTask.put("taskID", "res_sigin");
                     jsonTask.put("data", jsonData);
-                    jsonResponse.put("res_sigin", jsonTask);
+                    jsonResponse.put("request", jsonTask);
                 }
 
             } catch (SQLException ex) {
@@ -134,13 +141,22 @@ public class Portal extends HttpServlet {
         } //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Bet requests">
         else if ("play_bet".equals(req)) {
-            //String username = request.getParameter("username");
+
             String[] betPatterns = request.getParameterValues("patterns");
             String[] betAmounts = request.getParameterValues("amounts");
             int numberOfBet = betPatterns.length;
 
+            int[] patterns = new int[numberOfBet];
+            int[] amounts = new int[numberOfBet];
+
+            // Transfer params in type of String into type in int, Float
             for (int ibet = 0; ibet < numberOfBet; ibet++) {
+                patterns[ibet] = Integer.parseInt(betPatterns[ibet]);
+                amounts[ibet] = Integer.parseInt(betAmounts[ibet]);
             }
+            
+            BetProccess betProc = new BetProccess();
+            betProc.play(patterns, amounts);
 
         } //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Random Number Generator">
@@ -174,6 +190,7 @@ public class Portal extends HttpServlet {
          */
         try {
             System.out.println(req);
+            System.out.println(jsonResponse.toJSONString());
             out.println(jsonResponse.toJSONString());
         } finally {
             out.close();
