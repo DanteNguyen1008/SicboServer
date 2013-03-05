@@ -22,7 +22,6 @@ public class User {
     private String email;
     private String dataCreate;
     private Float currentBalance;
-    
     private DatabaseHandler databaseHandler;
 
     public User() {
@@ -62,11 +61,11 @@ public class User {
             jsonData.put("message", "Sign up fail for some reason.");
             jsonData.put("is_success", false);
         }
-        
+
         //put for task
         jsonTask.put("taskID", "res_signup");
         jsonTask.put("data", jsonData);
-        jsonResult.put("request", jsonTask);  
+        jsonResult.put("request", jsonTask);
         return jsonResult;
     }
 
@@ -98,6 +97,23 @@ public class User {
         JSONObject jsonResult = new JSONObject();
         jsonResult.put("request", "signout");
         return jsonResult;
+    }
+
+    public boolean updateBalance(float newBalance) {
+        int affectedRow = 0;
+        try {
+            affectedRow = this.databaseHandler.executeSQL(
+                    "USER_UPDATE_BALANCE",
+                    new String[]{"newBalance", "userId"},
+                    new Object[]{newBalance, this.getUserId()});
+        } catch (SQLException ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (affectedRow > 0) {
+            return true;
+        }
+        return false;
+
     }
 
     //<editor-fold defaultstate="collapsed" desc="Ecapsulate private fields">
@@ -156,7 +172,7 @@ public class User {
     public void setDataCreate(String dataCreate) {
         this.dataCreate = dataCreate;
     }
-    
+
     /**
      * @return the dataCreate
      */

@@ -47,6 +47,7 @@ public class Portal extends HttpServlet {
         String req = "";
         PrintWriter out = response.getWriter();
         JSONObject jsonResponse = new JSONObject();
+        HttpSession se = request.getSession();
         User user = new User();
 
         req = request.getParameter("type_of_request");
@@ -70,44 +71,39 @@ public class Portal extends HttpServlet {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
             try {
-                Object signUpResult = user.signIn(username, password);
+                Object signInResult = user.signIn(username, password);
 
 
                 JSONObject jsonTask = new JSONObject();
                 JSONObject jsonData = new JSONObject();
 
-                if (signUpResult instanceof User) {
-                    User u = (User) signUpResult;
+                if (signInResult instanceof User) {
+                    User u = (User) signInResult;
 
                     // If success, create and mantain session
-                    HttpSession se = request.getSession(true);
+                    
 
                     if (se.isNew()) {//dont have session yet
                         // Set session
-                        se.setAttribute("user", signUpResult);
+                        se.setAttribute("user", signInResult);
 
                         jsonData.put("signin_success", true);
                         jsonData.put("email", u.getEmail());
                         jsonData.put("current_balance", u.getCurrentBalance());
-
+                        
                         //put for task
                         jsonTask.put("taskID", "res_sigin");
                         jsonTask.put("data", jsonData);
                         jsonResponse.put("request", jsonTask);
                     } else {//have session  -dont need to login
                         // Set session
-                        /*
-                         se.setAttribute("user", signUpResult);
-
-                         jsonData.put("signin_success", true);
-                         jsonData.put("email", u.getEmail());
-                         jsonData.put("current_balance", u.getCurrentBalance());
-
-                         //put for task
-                         jsonTask.put("taskID", "res_sigin");
-                         jsonTask.put("data", jsonData);
-                         jsonResponse.put("request", jsonTask);
-                         */
+                        
+                         
+                        //put for task
+                        jsonTask.put("taskID", "res_sigin");
+                        jsonTask.put("data", jsonData);
+                        jsonResponse.put("request", jsonTask);
+                         
                     }
                 } else {
                     jsonData.put("signin_success", false);
@@ -124,7 +120,6 @@ public class Portal extends HttpServlet {
 
 
         } else if ("signout".equals(req)) {
-            HttpSession se = request.getSession(false);
             if (se != null) {
                 se.invalidate();
             }
@@ -142,21 +137,27 @@ public class Portal extends HttpServlet {
         //<editor-fold defaultstate="collapsed" desc="Bet requests">
         else if ("play_bet".equals(req)) {
 
-            String[] betPatterns = request.getParameterValues("patterns");
-            String[] betAmounts = request.getParameterValues("amounts");
+            String[] betPatterns = request.getParameterValues("betpatterns");
+            String[] betAmounts = request.getParameterValues("betamounts");
             int numberOfBet = betPatterns.length;
 
             int[] patterns = new int[numberOfBet];
-            int[] amounts = new int[numberOfBet];
+            float[] amounts = new float[numberOfBet];
 
             // Transfer params in type of String into type in int, Float
             for (int ibet = 0; ibet < numberOfBet; ibet++) {
                 patterns[ibet] = Integer.parseInt(betPatterns[ibet]);
-                amounts[ibet] = Integer.parseInt(betAmounts[ibet]);
+                amounts[ibet] = Float.parseFloat(betAmounts[ibet]);
             }
-            
-            BetProccess betProc = new BetProccess();
-            betProc.play(patterns, amounts);
+            //HttpSession se = request.getSession();
+            User curUser = (User) se.getAttribute("user");
+
+            BetProccess betProc = new BetProccess(curUser);
+            try {
+                jsonResponse = betProc.play(patterns, amounts);
+            } catch (SQLException ex) {
+                Logger.getLogger(Portal.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         } //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Random Number Generator">
