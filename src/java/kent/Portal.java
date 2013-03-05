@@ -48,6 +48,7 @@ public class Portal extends HttpServlet {
         PrintWriter out = response.getWriter();
         JSONObject jsonResponse = new JSONObject();
         HttpSession se = request.getSession();
+        se.setMaxInactiveInterval(1800);
         User user = new User();
 
         req = request.getParameter("type_of_request");
