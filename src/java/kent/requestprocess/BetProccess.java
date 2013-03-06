@@ -133,6 +133,6 @@ public class BetProccess {
             }
         }
 
-        this.currentBalance = this.currentBalance - this.amountBet;
+        this.currentBalance = this.currentBalance + this.amountBet;
     }
 }
