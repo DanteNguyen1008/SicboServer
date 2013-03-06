@@ -138,16 +138,16 @@ public class Portal extends HttpServlet {
         //<editor-fold defaultstate="collapsed" desc="Bet requests">
         else if ("play_bet".equals(req)) {
 
-            String[] betPatterns = request.getParameterValues("betpatterns");
+            String[] betSpots = request.getParameterValues("betspots");
             String[] betAmounts = request.getParameterValues("betamounts");
-            int numberOfBet = betPatterns.length;
+            int numOfSpots = betSpots.length;
 
-            int[] patterns = new int[numberOfBet];
-            float[] amounts = new float[numberOfBet];
+            int[] spots = new int[numOfSpots];
+            float[] amounts = new float[numOfSpots];
 
             // Transfer params in type of String into type in int, Float
-            for (int ibet = 0; ibet < numberOfBet; ibet++) {
-                patterns[ibet] = Integer.parseInt(betPatterns[ibet]);
+            for (int ibet = 0; ibet < numOfSpots; ibet++) {
+                spots[ibet] = Integer.parseInt(betSpots[ibet]);
                 amounts[ibet] = Float.parseFloat(betAmounts[ibet]);
             }
             //HttpSession se = request.getSession();
@@ -155,7 +155,7 @@ public class Portal extends HttpServlet {
 
             BetProccess betProc = new BetProccess(curUser);
             try {
-                jsonResponse = betProc.play(patterns, amounts);
+                jsonResponse = betProc.play(spots, amounts);
             } catch (SQLException ex) {
                 Logger.getLogger(Portal.class.getName()).log(Level.SEVERE, null, ex);
             }

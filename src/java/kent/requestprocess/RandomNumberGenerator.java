@@ -33,45 +33,83 @@ public class RandomNumberGenerator {
 
         return dices;
     }
-    
+
     public boolean isBig() {
         if (this.getSum() >= 11 && this.getSum() <= 17 && isTriple() == false) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
-        
+
     }
-    
+
     public boolean isSmall() {
         if (this.getSum() >= 4 && this.getSum() <= 10 && isTriple() == false) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
-        
+
+    }
+
+    public boolean isSpecificTriple(int triple) {
+        boolean result = false;
+        if (this.getDice1() == this.getDice2() && this.getDice2() == this.getDice3() && this.getDice3() == triple) {
+            result = true;
+        }
+        return result;
+    }
+
+    public boolean isSpecificDouble(int dbl) {
+        boolean result = false;
+        if (this.getDice1() == this.getDice2() && this.getDice2() == dbl
+                || this.getDice1() == this.getDice3() && this.getDice3() == dbl
+                || this.getDice2() == this.getDice3() && this.getDice3() == dbl) {
+            result = true;
+        }
+        return result;
+    }
+
+    public boolean isAnyTriple() {
+        boolean result = false;
+        if (this.getDice1() == this.getDice2()
+                && this.getDice2() == this.getDice3()) {
+            result = true;
+        }
+        return result;
     }
     
+    public boolean isTotalEqualTo(int total) {
+        boolean result = false;
+        if ((this.getDice1() + this.getDice2() + this.getDice3()) == total) {
+            result = true;
+        }
+        return result;
+    }
+    
+    public boolean isSingle(int number) {
+        boolean result = false;
+        if (this.getDice1() == number ||
+             this.getDice2() == number ||
+             this.getDice3() == number) {
+            result = true;
+        }
+        return result;
+    }
+
     public int getSum() {
         int sum = 0;
         sum = this.getDice1() + this.getDice2() + this.getDice3();
         return sum;
     }
-    
+
     public boolean isTriple() {
         if (this.getDice1() == this.getDice2() && this.getDice2() == this.getDice3()) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
-    
-    
-    
-    
 
     public static JSONObject getThreeDiceRandom() {
 
