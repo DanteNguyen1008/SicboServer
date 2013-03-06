@@ -125,13 +125,13 @@ public class BetProccess {
             }
         }
 
-        if (2 == ptn.getPatternId()) { // Small
-            if (this.rng.isSmall()) {
-                this.amountBet = this.amountBet + amount;
-            } else {
-                this.amountBet = this.amountBet - amount;
-            }
-        }
+//        if (2 == ptn.getPatternId()) { // Small
+//            if (this.rng.isSmall()) {
+//                this.amountBet = this.amountBet + amount;
+//            } else {
+//                this.amountBet = this.amountBet - amount;
+//            }
+//        }
 
         this.currentBalance = this.currentBalance + this.amountBet;
     }
