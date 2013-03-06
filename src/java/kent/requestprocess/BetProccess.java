@@ -34,14 +34,14 @@ public class BetProccess {
     RandomNumberGenerator rng = null;
     Pattern ptn = null;
     private float currentBalance;
-    private float amountBet = 0;
+    private float amountBet;
 
     public BetProccess(User user) {
         this.user = user;
         this.rng = new RandomNumberGenerator();
         this.ptn = new Pattern();
         this.currentBalance = this.user.getCurrentBalance();
-        
+        this.amountBet = 0;
         
     }
 
@@ -61,10 +61,10 @@ public class BetProccess {
 
         // Check valid balance
         // If Balance is less than Bet amount. Cancel and return invalid message
-        if (this.user.getCurrentBalance() < totalAmount) {
+        if (this.user.getCurrentBalance() < totalAmount || totalAmount > 100) {
 
             jsonData.put("is_success", false);
-            jsonData.put("message", "Your balance is not enough!");
+            jsonData.put("message", "Your balance is not enough or Total Amount greater than 100!");
             //put for task
             jsonTask.put("data", jsonData);
             jsonResult.put("request", jsonTask);
@@ -124,15 +124,17 @@ public class BetProccess {
                 this.amountBet = this.amountBet - amount;
             }
         }
-
-//        if (2 == ptn.getPatternId()) { // Small
-//            if (this.rng.isSmall()) {
-//                this.amountBet = this.amountBet + amount;
-//            } else {
-//                this.amountBet = this.amountBet - amount;
-//            }
-//        }
+        System.out.println(this.amountBet);
+        if (2 == ptn.getPatternId()) { // Small
+            if (this.rng.isSmall()) {
+                this.amountBet = this.amountBet + amount;
+            } else {
+                this.amountBet = this.amountBet - amount;
+            }
+        }
+        System.out.println(this.currentBalance);
 
         this.currentBalance = this.currentBalance + this.amountBet;
+        System.out.println(this.currentBalance);
     }
 }
