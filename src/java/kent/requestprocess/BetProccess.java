@@ -94,7 +94,7 @@ public class BetProccess {
                 jsonData.put("dice2", this.rng.getDice2());
                 jsonData.put("dice3", this.rng.getDice3());
                 jsonData.put("current_balance", this.currentBalance);
-                jsonData.put("totalbetamount", this.totalAmount);
+                jsonData.put("totalbetamount", totalAmount);
                 jsonData.put("totalwinamount", this.amountBet);
                 
                 //put for task
