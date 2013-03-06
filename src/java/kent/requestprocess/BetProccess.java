@@ -94,6 +94,8 @@ public class BetProccess {
                 jsonData.put("dice2", this.rng.getDice2());
                 jsonData.put("dice3", this.rng.getDice3());
                 jsonData.put("current_balance", this.currentBalance);
+                jsonData.put("total_amount", this.amountBet);
+                
                 //put for task
                 jsonTask.put("data", jsonData);
                 jsonResult.put("request", jsonTask);
@@ -105,16 +107,6 @@ public class BetProccess {
         return jsonResult;
     }
 
-    public float getTotalAmount(float[] amounts) {
-        int numOfBet = amounts.length;
-        float totalAmount = 0;
-        for (int iBet = 0; iBet < numOfBet; iBet++) {
-            totalAmount = totalAmount + amounts[iBet];
-        }
-
-        return totalAmount;
-    }
-
     /*
      * Do bets.
      * After do bets . update current_balance property
@@ -123,6 +115,7 @@ public class BetProccess {
 
         Pattern ptnOfSpot = this.ptn.getPattern(spot.getPatternId());
 
+        //<editor-fold defaultstate="collapsed" desc="Big and Small">
         if (1 == spot.getSpotId()) { // Big
             if (this.rng.isBig()) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
@@ -130,7 +123,7 @@ public class BetProccess {
                 this.amountBet = this.amountBet - amount;
             }
         }
-
+        
         if (2 == spot.getSpotId()) { // Small
             if (this.rng.isSmall()) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
@@ -138,7 +131,9 @@ public class BetProccess {
                 this.amountBet = this.amountBet - amount;
             }
         }
+        //</editor-fold>
 
+        //<editor-fold defaultstate="collapsed" desc="Specific triple">
         if (3 == spot.getSpotId()) { // Triple 1
             if (this.rng.isSpecificTriple(1)) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
@@ -181,7 +176,9 @@ public class BetProccess {
                 this.amountBet = this.amountBet - amount;
             }
         }
+        //</editor-fold>
 
+        //<editor-fold defaultstate="collapsed" desc="Specific double">
         if (9 == spot.getSpotId()) { // Double 1
             if (this.rng.isSpecificDouble(1)) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
@@ -224,7 +221,9 @@ public class BetProccess {
                 this.amountBet = this.amountBet - amount;
             }
         }
+        //</editor-fold>
 
+        //<editor-fold defaultstate="collapsed" desc="Total == 4 - 17">
         if (16 == spot.getSpotId()) { // Three Dice = 4
             if (this.rng.isTotalEqualTo(4)) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
@@ -323,50 +322,64 @@ public class BetProccess {
                 this.amountBet = this.amountBet - amount;
             }
         }
+        //</editor-fold>
 
-        if (28 == spot.getSpotId()) { // Three Dice = 1
+        //<editor-fold defaultstate="collapsed" desc="Single Dice = 1,2,3,4,5,6">
+        if (28 == spot.getSpotId()) { // Single = 1
             if (this.rng.isSingle(1)) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
             } else {
                 this.amountBet = this.amountBet - amount;
             }
         }
-        if (29 == spot.getSpotId()) { // Three Dice = 2
+        if (29 == spot.getSpotId()) { // Single = 2
             if (this.rng.isSingle(2)) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
             } else {
                 this.amountBet = this.amountBet - amount;
             }
         }
-        if (30 == spot.getSpotId()) { // Three Dice = 3
+        if (30 == spot.getSpotId()) { // Single = 3
             if (this.rng.isSingle(3)) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
             } else {
                 this.amountBet = this.amountBet - amount;
             }
         }
-        if (31 == spot.getSpotId()) { // Three Dice = 4
+        if (31 == spot.getSpotId()) { // Single = 4
             if (this.rng.isSingle(4)) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
             } else {
                 this.amountBet = this.amountBet - amount;
             }
         }
-        if (32 == spot.getSpotId()) { // Three Dice = 5
+        if (32 == spot.getSpotId()) { // Single = 5
             if (this.rng.isSingle(5)) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
             } else {
                 this.amountBet = this.amountBet - amount;
             }
         }
-        if (33 == spot.getSpotId()) { // Three Dice = 6
+        if (33 == spot.getSpotId()) { // Single = 6
             if (this.rng.isSingle(6)) {
                 this.amountBet = this.amountBet + amount * ptnOfSpot.getOdds();
             } else {
                 this.amountBet = this.amountBet - amount;
             }
         }
+        //</editor-fold>
 
         this.currentBalance = this.currentBalance + this.amountBet;
+    }
+    
+    
+    public float getTotalAmount(float[] amounts) {
+        int numOfBet = amounts.length;
+        float totalAmount = 0;
+        for (int iBet = 0; iBet < numOfBet; iBet++) {
+            totalAmount = totalAmount + amounts[iBet];
+        }
+
+        return totalAmount;
     }
 }
