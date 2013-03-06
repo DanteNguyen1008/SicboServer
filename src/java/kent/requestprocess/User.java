@@ -110,6 +110,7 @@ public class User {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (affectedRow > 0) {
+            this.setCurrentBalance(newBalance);
             return true;
         }
         return false;

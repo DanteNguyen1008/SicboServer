@@ -40,13 +40,15 @@ public class BetProccess {
         this.user = user;
         this.rng = new RandomNumberGenerator();
         this.ptn = new Pattern();
-        this.currentBalance = this.user.getCurrentBalance();
-        this.amountBet = 0;
+        
         
     }
 
     public JSONObject play(int[] patterns, float[] amounts) throws SQLException {
 
+        this.currentBalance = this.user.getCurrentBalance();
+        this.amountBet = 0;
+        
         /*
          * Initital JSON object
          */
@@ -80,6 +82,7 @@ public class BetProccess {
 
             // Update to databse
             if (this.user.updateBalance(this.currentBalance)) {
+                this.currentBalance = this.user.getCurrentBalance();
                 jsonData.put("is_success", true);
                 if (this.amountBet > 0) {
                     jsonData.put("iswin", true);
